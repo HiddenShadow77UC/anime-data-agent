@@ -1,0 +1,40 @@
+
+> @anime-data-agent/mcp@0.1.0 test
+> npm run build && node --test tests/*.test.mjs
+
+
+> @anime-data-agent/mcp@0.1.0 build
+> tsc -p tsconfig.json
+
+responseMode: 'json' drops mid-call notifications. subscriptions/listen streams are always served over SSE regardless; other notifications emitted before a result are dropped.
+responseMode: 'json' drops mid-call notifications. subscriptions/listen streams are always served over SSE regardless; other notifications emitted before a result are dropped.
+responseMode: 'json' drops mid-call notifications. subscriptions/listen streams are always served over SSE regardless; other notifications emitted before a result are dropped.
+responseMode: 'json' drops mid-call notifications. subscriptions/listen streams are always served over SSE regardless; other notifications emitted before a result are dropped.
+responseMode: 'json' drops mid-call notifications. subscriptions/listen streams are always served over SSE regardless; other notifications emitted before a result are dropped.
+responseMode: 'json' drops mid-call notifications. subscriptions/listen streams are always served over SSE regardless; other notifications emitted before a result are dropped.
+responseMode: 'json' drops mid-call notifications. subscriptions/listen streams are always served over SSE regardless; other notifications emitted before a result are dropped.
+responseMode: 'json' drops mid-call notifications. subscriptions/listen streams are always served over SSE regardless; other notifications emitted before a result are dropped.
+responseMode: 'json' drops mid-call notifications. subscriptions/listen streams are always served over SSE regardless; other notifications emitted before a result are dropped.
+responseMode: 'json' drops mid-call notifications. subscriptions/listen streams are always served over SSE regardless; other notifications emitted before a result are dropped.
+responseMode: 'json' drops mid-call notifications. subscriptions/listen streams are always served over SSE regardless; other notifications emitted before a result are dropped.
+responseMode: 'json' drops mid-call notifications. subscriptions/listen streams are always served over SSE regardless; other notifications emitted before a result are dropped.
+✔ MCP discovery advertises six read-only tools with input/output schemas (38.9691ms)
+✔ ranking returns Python result and evidence unchanged, without adding a vote floor (6.6286ms)
+✔ strict schemas reject unsupported fields, disabled metrics, duplicate IDs and oversized lists before API calls (7.9073ms)
+✔ tool calls are stateless and delegate search, detail, compare and aggregation (6.0763ms)
+✔ dataset metadata is read from Python, not invented by the MCP (3.5863ms)
+✔ upstream rejection and connection failure become readable errors without leaking bodies (9.3137ms)
+✔ timeout and malformed response are controlled failures (6.1077ms)
+✔ API URL is operator configuration and redirects are forbidden; response size is bounded (1.9185ms)
+✔ loopback HTTP guards reject an unrelated Host or Origin before processing (0.6213ms)
+✔ legacy 2025 MCP initialize, discovery and call remain supported (3.4683ms)
+ℹ tests 10
+ℹ suites 0
+ℹ pass 10
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 333.0666
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm. See `npm help npmrc` for supported config options.
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm. See `npm help npmrc` for supported config options.

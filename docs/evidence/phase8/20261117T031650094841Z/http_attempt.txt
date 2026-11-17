@@ -1,0 +1,4 @@
+Command: .venv/Scripts/python.exe scripts/smoke_api.py --url http://127.0.0.1:8011
+Exit: 1
+Live verification incomplete: <urlopen error [WinError 10013] Intento de acceso a un socket no permitido por sus permisos de acceso>
+No successful HTTP verification in this execution environment.

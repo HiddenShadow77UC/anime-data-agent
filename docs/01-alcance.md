@@ -1,9 +1,12 @@
 # Alcance detallado por fases — Agente de anime
 
-Estado: fases 1, 2 y 3 aprobadas; fases 4 y 5 autorizadas conjuntamente e implementadas
-para revisión. Estado detallado y comprobaciones pendientes en `00-plan.md`.
-Fecha de elaboración: 16 de noviembre de 2026.
-Nombre técnico acordado: `anime-data-agent`. Nombre público e identidad visual pendientes.
+Estado: fases 1 a 6 aprobadas; fase 7 implementada con respaldo local y prueba
+real del modelo pendiente; fase 8 entregada con avance a fase 9 autorizado;
+fase 9 implementada y verificada localmente, con conexión desde ChatGPT pendiente.
+Resumen y evidencias en [00-plan.md](00-plan.md).
+Fecha de elaboración y actualización: 16 de noviembre de 2026 (Costa Rica).
+Nombre técnico: `anime-data-agent`; la interfaz usa Anime Data Agent. El prototipo
+visual de escritorio fue aprobado; una identidad pública definitiva no se ha acordado.
 
 ## Objetivo
 
@@ -17,8 +20,17 @@ Las respuestas describen una captura del catálogo, no estadísticas en tiempo r
 - Referencia de implementación: `../messi-wc-2022-data-agent`.
 - Una única fuente inicial: `../Anime-dataset/data/raw/anime_seasonal_20261116.csv`.
 - Interfaz Next.js y TypeScript; API FastAPI con Python; conversación con LangGraph.
-- Paso 7: conexión real con un modelo, conservando herramientas y parámetros validados.
-- Paso 9 incluido: servidor MCP en Node.js y TypeScript, que llama a la API Python.
+- Paso 7: adaptador OpenAI Responses, modelo configurable `gpt-5-mini`, herramientas
+  y parámetros validados. Sin clave o ante fallo controlado, continuar con reglas
+  y advertencia visible. Reiniciar la API para reintentar el modelo tras el fallo.
+- La falta de créditos no bloquea consultas locales ni las fases 8 y 9; una prueba
+  real de generación no se considera aprobada por funcionar el modo de reglas.
+- Paso 9: MCP Node.js/TypeScript que llama directamente a Python; cliente elegido:
+  ChatGPT. HTTP para conexión privada mediante Secure MCP Tunnel; stdio adicional
+  disponible y probado localmente. El túnel autenticado sigue pendiente.
+- Interfaz: portada y análisis separados, parallax/carrusel enlazado con ficha,
+  tema claro/oscuro según navegador y claro como respaldo; escritorio inicial,
+  móvil reservado para beta. La versión inicial de fase 6 fue aprobada.
 - Las consultas y cálculos se implementan una sola vez en Python.
 - El desarrollo avanza por etapas con descripción del trabajo y revisión al terminar.
 
@@ -31,12 +43,18 @@ no está documentado en ese CSV. No se presentará esa fecha como verificación 
 
 El recolector `../Anime-dataset/src/mal_api.py` usa MyAnimeList v2 y conserva
 el ID de MyAnimeList en `anime_id`. Su transformación asigna cero como valor por
-defecto a diversas estadísticas: esos ceros requieren revisión por campo en el paso 3.
-En particular, `members` y `favorites` pueden reflejar datos no proporcionados
-por el endpoint; no se asumirán conteos fiables sin comprobar su calidad.
+defecto a diversas estadísticas. La fase 3 revisó esos valores por campo:
+`members`, `favorites`, `watching`, `completed`, `on_hold`, `dropped` y
+`plan_to_watch` quedan deshabilitados por falta de datos fiables. Las puntuaciones
+no publicadas y otros desconocidos se normalizan sin convertirlos en cero ni
+eliminar las valoraciones disponibles; se preserva trazabilidad del original.
 
 No se ha certificado exhaustividad histórica ni cobertura total por temporada.
-La procedencia, versión del repositorio y hash del CSV se fijarán en el paso 3.
+La fase 3 fijó procedencia, commit y hash del CSV en el manifiesto de carga:
+commit `5d911e8eb286c0e8f17c263fb9ea7c09ceb1712c` y SHA-256
+`9f73ed290e1be7a45ec9b0772077aaedcf490660d4196e0cf1d56465072d980c`.
+La copia original reside en `source.csv` dentro de la carga identificada en
+`data/processed`; `current.json` señala su manifiesto. Ver [fase 3](03-dataset.md).
 
 ## Funciones y criterios de aceptación
 
@@ -69,13 +87,17 @@ al paso 5; la interpretación flexible con modelo corresponde al paso 7.
 12. Cada turno conserva filtros, IDs de resultados, versión de datos y selección relevante.
 13. Los conteos se describen como registros del dataset; no como totalidad mundial de anime.
 
-## Presentaciones funcionales propuestas
+## Presentaciones funcionales acordadas e implementadas
 
 - Búsqueda y ranking: tabla; gráfico de barras para puntuaciones.
 - Comparación: tabla de atributos de los títulos seleccionados.
 - Conteos por año: tabla y gráfico de barras.
 - Detalle: ficha con atributos y sinopsis disponible.
-- La elección de colores, estilo, imágenes, nombre público y diseño requiere preferencias del usuario en el paso 6.
+- Portada y análisis en páginas separadas; carrusel/ficha enlazados, parallax y
+  detalle al seleccionar un anime. Tema del navegador y escritorio inicial.
+- AniList aporta imágenes opcionales asociadas por ID; no se unen sus métricas
+  al dataset estadístico. La ausencia de imágenes no invalida los datos de la ficha.
+- Mejoras visuales, revisión completa de accesibilidad y móvil se reservan para beta.
 
 ## Decisiones confirmadas al cerrar el paso 1
 
@@ -89,9 +111,14 @@ al paso 5; la interpretación flexible con modelo corresponde al paso 7.
 
 - No se calcularán puntuaciones históricas a partir de una captura actual.
 - No se deducirá disponibilidad actual de streaming a partir de campos ausentes.
-- Recomendación personalizada por historial de usuarios y unión con AniList quedan fuera del alcance acordado.
-- No se ha elegido proveedor/modelo, credenciales, despliegue ni transporte MCP.
-  Se resolverán en sus etapas respectivas antes de ejecutar acciones dependientes.
+- Recomendación personalizada por historial de usuarios y unión estadística con
+  AniList quedan fuera. Las referencias visuales de AniList sí forman parte de la interfaz.
+- Proveedor/modelo configurado: OpenAI / `gpt-5-mini`; generación real pendiente
+  por `credit_balance_exhausted`. Credenciales solo en backend, sin versionarlas.
+- MCP local: HTTP y stdio implementados. Cliente de destino: ChatGPT. Faltan
+  túnel autenticado, verificación desde esa cuenta y resolución de la revisión automática.
+- Publicación, hosting y redistribución pública del CSV no están decididos.
+  No se certificó licencia explícita de redistribución de la fuente.
 - Consultas locales no necesitan que Jikan responda. El descargador anterior no es un requisito de ejecución.
 
 ## Descripción del trabajo del paso 1
@@ -106,12 +133,16 @@ obligatorio de valoraciones y continuación a la fase 2.
 
 ## Desarrollo requerido por cada fase
 
-Esta sección especifica trabajo futuro. Documentar un requisito no significa que
-esté implementado o aprobado. `00-plan.md` conserva el estado real de ejecución.
-Las rutas de entregables indicadas abajo son propuestas de organización y se
-concretarán durante cada fase; consultar el estado real en el plan y los cierres.
+Esta sección conserva los requisitos de las nueve fases y añade, en cada una,
+el resultado ejecutado, su revisión y las limitaciones pendientes. Un requisito
+no equivale a una prueba aprobada. Las listas de trabajo son criterios de alcance,
+no una lista íntegra de tareas aún sin implementar. Las rutas propuestas se
+contrastan con los entregables reales enlazados en cada estado y en `00-plan.md`.
 
 ### Fase 1. Definir y revisar el alcance
+
+**Estado y resultado:** aprobada. Catálogo completo, filtros por formato y mínimo
+de valoraciones opcional confirmados. Entregables: este archivo y [plan](00-plan.md).
 
 **Entrada:** objetivo del usuario, proyecto de Messi y CSV local identificado.
 
@@ -135,6 +166,10 @@ trabajo independiente. Las dos decisiones se confirmaron explícitamente en mens
 posteriores a la revisión inicial de los documentos.
 
 ### Fase 2. Preparar el proyecto
+
+**Estado y resultado:** aprobada. Estructura `apps/api`, `apps/web` y reserva de
+`apps/mcp`, dependencias, configuración y comprobación de conexión local entregadas.
+El usuario verificó conexión, desconexión y recuperación. Ver [fase 2](02-proyecto.md).
 
 **Entrada:** alcance revisado y decisiones necesarias confirmadas.
 
@@ -162,6 +197,12 @@ No hay dependencias de rutas privadas del proyecto de Messi ni secretos versiona
 **Revisión:** demostrar el arranque y describir qué partes son todavía estructura.
 
 ### Fase 3. Preparar y validar el dataset
+
+**Estado y resultado:** aprobada. 22.634 registros e IDs únicos, copia original,
+carga inmutable, manifiesto verificado, diccionario e informe de calidad; cinco
+pruebas de preparación correctas. Siete métricas quedan deshabilitadas. La ruta
+real del original es `data/processed/<load_id>/source.csv`, no `data/raw`.
+Ver [informe](03-dataset.md) y [diccionario](03-diccionario-datos.md).
 
 **Entrada:** CSV seleccionado y repositorio de procedencia local.
 
@@ -197,6 +238,11 @@ datos impiden publicar una carga como válida y no reemplazan una carga válida 
 
 ### Fase 4. Crear las herramientas de consulta
 
+**Estado y resultado:** aprobada. Búsqueda por títulos, ranking, detalle,
+comparación de dos IDs y grupos por año/género/estudio implementados. Filtros
+antes del límite, desempate por ID y evidencia reproducible, contrastados con
+el CSV y por HTTP. Ver [fase 4](04-consultas.md).
+
 **Entrada:** dataset validado y definiciones de métricas.
 
 **Trabajo requerido:**
@@ -230,6 +276,11 @@ conteos; ningún resultado viola filtros o usa métricas deshabilitadas por cali
 
 ### Fase 5. Construir la conversación y el historial
 
+**Estado y resultado:** aprobada. LangGraph y SQLite conservan contexto,
+selección y turnos inmutables; recuperación, aislamiento, idempotencia y conflictos
+verificados. El respaldo por reglas sigue disponible. El MCP no comparte este
+historial: recibe filtros completos en cada llamada. Ver [fase 5](05-conversacion.md).
+
 **Entrada:** herramientas de consulta verificadas.
 
 **Trabajo requerido:**
@@ -257,6 +308,12 @@ en cada paso y que las conversaciones no se mezclan. Un fallo no deja turnos par
 **Revisión:** demostrar la conversación acotada e indicar que aún no usa un modelo.
 
 ### Fase 6. Construir y revisar la interfaz
+
+**Estado y resultado:** prototipo inicial de escritorio aprobado por el usuario.
+Portada `/` y análisis `/analisis`, carrusel/parallax, fichas, chat, historial,
+tablas y gráficos implementados. Se atendieron problemas de imágenes/detalle.
+La revisión visual fue del usuario; no se acredita automatización de navegador
+ni accesibilidad completa. Mejoras y móvil pendientes. Ver [fase 6](06-interfaz.md).
 
 **Entrada:** API conversacional estable y preferencias visuales del usuario.
 
@@ -286,6 +343,12 @@ utilizables en los dispositivos elegidos. El usuario revisa la apariencia.
 
 ### Fase 7. Conectar un modelo de IA
 
+**Estado y resultado:** adaptador y herramientas implementados y probados con
+proveedor simulado. La generación real sigue sin aceptación por créditos agotados.
+Por instrucción del usuario, la aplicación continúa con reglas y advertencia,
+sin presentar ese resultado como respuesta del modelo ni bloquear las fases siguientes.
+Ver [fase 7](07-modelo-ia.md).
+
 **Entrada:** herramientas y conversación verificadas, proveedor/modelo elegido.
 
 **Trabajo requerido:**
@@ -309,14 +372,27 @@ orquestación de herramientas y evaluación de preguntas en español.
 
 **Aceptación:** distintas formulaciones producen consultas correctas; no se ejecutan
 argumentos inválidos; una pregunta no sustentada pide aclaración o informa el límite.
-Los cálculos se mantienen iguales a la fase 4 y un fallo del modelo conserva el resultado previo.
+Los cálculos se mantienen iguales a la fase 4. Sin conexión al modelo, se advierte
+y se procesa el mensaje con reglas; si se obtiene una consulta válida, su resultado
+puede actualizar la vista. Si requiere aclaración o falla, conserva el resultado
+anterior y no deja un turno parcial. Después del primer fallo no reintenta el
+proveedor en cada mensaje; reiniciar la API para intentar conectarlo nuevamente.
 
 **Revisión:** mostrar llamadas reales, límites observados y consumo disponible sin
 exponer secretos; no dar por completada la fase con respuestas simuladas.
 
 ### Fase 8. Validar y documentar la entrega local
 
-**Entrada:** aplicación con modelo funcional.
+**Estado y resultado:** entregada; el usuario autorizó avanzar a fase 9.
+Validador, seis casos con hash fijado, documentación y demostración reproducible.
+La última regresión ampliada aprobó 46 pruebas, omitió una ASGI y pasó seis casos,
+TypeScript, build web y HTTP real. Incluye las diez pruebas MCP añadidas en fase 9;
+no son todas pruebas originarias de fase 8. No se certifica instalación desde cero
+ni generación real OpenAI. Ver [validación](08-validacion.md) y [demo](08-demo.md).
+
+**Entrada:** aplicación local funcional con herramientas verificadas. Por decisión
+del usuario, el modo de reglas permite validar y documentar aunque el proveedor
+no permita todavía una generación real. Las pruebas del modelo se registran aparte.
 
 **Trabajo requerido:**
 
@@ -341,6 +417,16 @@ Esta fase valida la aplicación local; la integración MCP se certifica en la fa
 **Revisión:** presentar qué pasó, qué no se pudo comprobar y qué queda pendiente.
 
 ### Fase 9. Integrar MCP en Node.js y TypeScript
+
+**Estado y resultado:** servidor local implementado y verificado con cliente SDK;
+destino acordado: ChatGPT. Seis herramientas: `get_dataset_info`, `search_anime`,
+`rank_anime`, `get_anime_detail`, `compare_anime`, `aggregate_anime`. Diez pruebas
+MCP correctas y nueve comprobaciones reales por transporte HTTP/stdio coincidentes
+con Python. Pendientes: proxy web, túnel autenticado y llamada desde ChatGPT.
+La revisión automática bloqueó una operación de proceso por posible telemetría
+a `dc.services.visualstudio.com`; su origen no se confirmó y no hay autorización
+posterior para esa conexión. No se declara la fase completa ni procesos activos.
+Ver [fase 9](09-mcp.md) y [evidencia](evidence/phase9/README.md).
 
 **Entrada:** herramientas API estables, documentación y cliente MCP elegido.
 
@@ -374,17 +460,19 @@ integración no se declara completa solo porque el proceso Node inicia o lista h
 **Revisión:** demostrar al menos ranking y comparación desde el cliente elegido;
 documentar si hubo túnel y qué conectividad permanece necesaria.
 
-## Dependencias y decisiones que no deben anticiparse
+## Dependencias, decisiones resueltas y pendientes
 
-| Momento | Decisión pendiente | Efecto |
+| Fase | Decisión y estado | Efecto o pendiente |
 | --- | --- | --- |
-| Cierre de fase 1 — resuelto | Catálogo completo; mínimo de valoraciones opcional, ninguno por defecto | Reglas de consulta y universo inicial. |
-| Fase 2 | Versiones compatibles, gestor de dependencias y estado de Git | Arranque reproducible; no implica publicar un repositorio. |
-| Fase 3 | Interpretación de ceros y fiabilidad de estadísticas | Habilitar o excluir métricas con evidencia. |
-| Fase 4 | Operador de múltiples géneros y alcance de comparación | Consultas inequívocas y límites visibles. |
-| Antes de fase 6 | Nombre, estilo, imágenes y dispositivos | Presentación aprobada por el usuario. |
-| Antes de fase 7 | Proveedor/modelo, credenciales y límites de consumo | Integración real con IA. |
-| Antes de fase 9 | Cliente MCP, transporte y necesidad de túnel | Conexión comprobable de extremo a extremo. |
+| 1 | Resuelto: catálogo completo y mínimo de votos opcional. | Sin mínimo por defecto. |
+| 2 | Resuelto: Python/venv/pip y Next.js/Node/npm; versiones y lockfiles registrados. | No implica publicar un remoto; instalación desde cero no certificada. |
+| 3 | Resuelto: políticas de nulos/ceros, fechas y siete métricas deshabilitadas. | Mantener atribución y revisar licencia antes de redistribuir. |
+| 4 | Resuelto: varios géneros requieren all/any; comparación de dos IDs distintos. | Validación en Python, sin duplicar cálculos en Node. |
+| 6 | Resuelto: portada/análisis separados, parallax/carrusel, tema del navegador y escritorio. | Mejoras visuales y móvil en beta; identidad pública final pendiente. |
+| 7 | Resuelto: OpenAI Responses, modelo configurable y respaldo con advertencia. | Generación real pendiente por saldo; no bloquea consultas locales. |
+| 8 | Resuelto: validación local puede avanzar sin generación real. | Separar evidencia local, simulaciones y pruebas externas. |
+| 9 | Resuelto: ChatGPT como cliente, HTTP para túnel y stdio disponible. | Configurar túnel, resolver revisión automática y verificar llamada desde ChatGPT/proxy web. |
+| Publicación | No acordada. | Hosting, autenticación pública y redistribución requieren definición propia. |
 
 Las decisiones se consultan cuando condicionan el siguiente trabajo; no se piden
 todas por adelantado. Publicación, hosting o repositorio remoto no están incluidos
@@ -406,8 +494,17 @@ la decisión. No se eliminan datos o trabajo previo para avanzar de fase.
 
 ## Definición de entrega completa
 
-El proyecto estará completo cuando las nueve fases hayan sido revisadas y el
-usuario pueda consultar el dataset local desde la web y desde el cliente MCP
-acordado, formular variantes en español mediante un modelo real, recuperar
-contexto y comprobar fuente, filtros y resultados. Los límites de cobertura y
-calidad deben permanecer visibles en la aplicación y en la documentación.
+La entrega local puede revisarse y utilizarse con reglas y advertencia cuando
+la IA no esté disponible, conforme a lo solicitado por el usuario. Eso no acredita
+la aceptación de la generación real de fase 7 ni la conexión remota de fase 9.
+
+El cierre completo de las capacidades previstas requiere revisión de las nueve
+fases, una generación real fundamentada, consultas desde la web y desde ChatGPT
+mediante el MCP acordado, recuperación de contexto y evidencia verificable de
+fuente, filtros y resultados. No se sustituye una prueba desde ChatGPT por una
+prueba del cliente SDK. Los límites de calidad y cobertura deben seguir visibles.
+
+Pendientes actuales: acceso/saldo para probar el modelo, resolución del bloqueo
+de revisión automática sin eludirlo, túnel/cuenta, igualdad mediante el proxy web
+y ranking/comparación desde ChatGPT. La autorización para editar este alcance
+no modifica permisos de red, no autoriza telemetría ni publica servicios.

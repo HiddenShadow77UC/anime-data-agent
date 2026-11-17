@@ -30,7 +30,7 @@ def resolve(repo, previous, request):
     if state.load_id is not None and state.load_id != repo.load_id:
         raise Clarify('La carga de datos cambió. Iniciá una conversación nueva para no mezclar versiones; el resultado anterior se conserva.')
     visible = {r['anime_id'] for r in previous.result.rows} if previous and previous.result else set()
-    if request.selected_ids:
+    if request.selected_ids is not None:
         if len(set(request.selected_ids)) != len(request.selected_ids) or not set(request.selected_ids) <= visible:
             raise Clarify('Seleccioná IDs distintos que aparezcan en el resultado activo de esta conversación.')
         state.selected_ids = request.selected_ids
@@ -117,8 +117,10 @@ class Work(TypedDict, total=False):
     response: AgentResponse
 
 
-def build_agent(repo):
+def build_agent(repo, model_interpreter=None):
     def interpret(work):
+        if model_interpreter is not None:
+            return {'response': model_interpreter.run(work.get('previous'), work['request'])}
         try:
             state, action = resolve(repo, work.get('previous'), work['request'])
             return {'state': state, 'action': action}
@@ -165,7 +167,7 @@ def build_agent(repo):
     graph.add_node('query', query)
     graph.add_node('compose', compose)
     graph.add_edge(START, 'resolve')
-    graph.add_edge('resolve', 'query')
+    graph.add_conditional_edges('resolve', lambda work: END if work.get('response') is not None else 'query', {END: END, 'query': 'query'})
     graph.add_edge('query', 'compose')
     graph.add_edge('compose', END)
     return graph.compile()

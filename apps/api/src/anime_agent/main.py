@@ -1,14 +1,16 @@
 """Typed query API and bounded conversation over a pinned local snapshot."""
 import sqlite3
+import asyncio
 from fastapi import FastAPI, Query as Parameter
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 
 from anime_agent.config import Settings
-from anime_agent.conversation import build_agent
+from anime_agent.fallback import ResilientAgent
 from anime_agent.history import Conflict, History, NotFound
 from anime_agent.models import ActivateRequest, ConversationHistory, Filters, Query, Result, SavedTurn, TurnRequest
 from anime_agent.queries import DatasetUnavailable, InvalidQuery, Repository
+from anime_agent.openai_agent import ModelInterpreter, ModelUnavailable
 
 
 class Health(BaseModel):
@@ -19,6 +21,10 @@ class Health(BaseModel):
     conversation_status: str
     model_status: str
     mcp_status: str
+    agent_mode: str = 'rules'
+    model_name: str | None = None
+    model_last_verified_at: str | None = None
+    model_warning: str | None = None
 
 
 def create_app(settings: Settings | None = None) -> FastAPI:
@@ -27,6 +33,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     app.state.repository = None
     app.state.agent = None
     app.state.history = None
+    app.state.model_interpreter = None
 
     def repository():
         if app.state.repository is None:
@@ -40,7 +47,13 @@ def create_app(settings: Settings | None = None) -> FastAPI:
 
     def agent():
         if app.state.agent is None:
-            app.state.agent = build_agent(repository())
+            warning = None
+            if app.state.settings.agent_mode == 'openai':
+                if not app.state.settings.openai_api_key:
+                    warning = 'Falta configurar OPENAI_API_KEY.'
+                else:
+                    app.state.model_interpreter = ModelInterpreter(repository(), app.state.settings)
+            app.state.agent = ResilientAgent(repository(), app.state.model_interpreter, warning)
         return app.state.agent
 
     async def unavailable_handler(request, error):
@@ -59,6 +72,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         return JSONResponse(status_code=503, content={'detail': 'El historial no está disponible; no se guardó un turno parcial.'})
 
     app.add_exception_handler(DatasetUnavailable, unavailable_handler)
+    app.add_exception_handler(ModelUnavailable, unavailable_handler)
     app.add_exception_handler(InvalidQuery, invalid_handler)
     app.add_exception_handler(Conflict, conflict_handler)
     app.add_exception_handler(NotFound, not_found_handler)
@@ -71,10 +85,17 @@ def create_app(settings: Settings | None = None) -> FastAPI:
             dataset_status = 'validated'
         except DatasetUnavailable:
             dataset_status = 'unavailable'
+        settings = app.state.settings
+        warning = app.state.agent.warning if app.state.agent else ('Falta configurar OPENAI_API_KEY.' if settings.agent_mode == 'openai' and not settings.openai_api_key else None)
+        effective_mode = 'rules' if warning else settings.agent_mode
+        verified = app.state.model_interpreter.last_success_at if app.state.model_interpreter else None
+        model_status = ('verified' if verified else 'configured_not_verified' if settings.openai_api_key else 'missing_api_key') if settings.agent_mode == 'openai' else 'not_connected'
         return Health(
-            service="anime-data-agent-api", status="ok", phase=5,
-            dataset_status=dataset_status, conversation_status="bounded_rules",
-            model_status="not_connected", mcp_status="not_implemented",
+            model_warning=warning,
+            service="anime-data-agent-api", status="ok", phase=7,
+            dataset_status=dataset_status, conversation_status="openai_tools" if effective_mode == 'openai' else "bounded_rules",
+            model_status="unavailable_fallback" if warning else model_status, mcp_status="separate_server_not_checked", agent_mode=effective_mode,
+            model_name=settings.openai_model if settings.agent_mode == 'openai' else None, model_last_verified_at=verified,
         )
 
     @app.get('/api/dataset')
@@ -107,7 +128,8 @@ def create_app(settings: Settings | None = None) -> FastAPI:
 
     @app.post('/api/conversations/{conversation_id}/turns', response_model=SavedTurn)
     async def turn(conversation_id: str, body: TurnRequest):
-        return history().append(conversation_id, body, agent())
+        store, graph = history(), agent()
+        return await asyncio.to_thread(store.append, conversation_id, body, graph)
 
     @app.post('/api/conversations/{conversation_id}/activate', response_model=ConversationHistory)
     async def activate(conversation_id: str, body: ActivateRequest):

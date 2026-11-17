@@ -4,6 +4,35 @@ Aplicación local en construcción para explorar el catálogo de anime en españ
 FastAPI/Python ofrece las consultas; LangGraph interpreta los mensajes acotados
 y SQLite conserva el historial. Next.js/TypeScript ofrece portada y espacio de análisis.
 
+## Inicio paso a paso
+
+Ver la [guía completa de ejecución en Windows](docs/10-ejecucion-paso-a-paso.md):
+instalación desde un clon nuevo, datos, web sin clave de IA ni MCP, OpenAI
+opcional, MCP con ChatGPT Desktop, reinicio y solución de problemas.
+
+Las rutas de esta documentación son relativas a la **raíz del repositorio**
+(la carpeta clonada `anime-data-agent`), donde están `apps/` y
+`scripts/`. Abrir cada terminal en esa carpeta.
+
+Para el uso habitual **sin IA y sin MCP**, desde `anime-data-agent`, mantener
+abiertas dos terminales:
+
+**Terminal 1 — API:**
+
+```powershell
+.\.venv\Scripts\python.exe scripts/start_api.py --mode rules
+```
+
+**Terminal 2 — web:**
+
+```powershell
+npm.cmd --prefix apps/web run dev
+```
+
+Esperar `Ready` y abrir [la portada](http://127.0.0.1:3000/) o
+[el análisis](http://127.0.0.1:3000/analisis). El puerto 8000 sirve la API;
+no contiene la página web. Cerrar una terminal detiene su servidor.
+
 ## Estado
 
 - Alcance: catálogo completo con filtros por formato.
@@ -14,8 +43,9 @@ y SQLite conserva el historial. Next.js/TypeScript ofrece portada y espacio de a
 - Datos: carga local verificada, 22.634 registros.
 - Consultas: búsqueda, filtros, rankings, detalle, comparación y agregación por API.
 - Conversación: reglas acotadas, selección de registros, recuperación e historial persistente.
-- Modelo de IA y MCP: todavía no integrados; fases 7 y 9 respectivamente.
-- Interfaz de fase 6: implementada, pendiente de revisión visual y aceptación.
+- Interfaz de fase 6: versión inicial aprobada; mejoras y beta móvil pendientes.
+- Modelo de IA: adaptador implementado; prueba real pendiente por créditos agotados. Continúa con advertencia y reglas locales.
+- MCP: conectado a ChatGPT mediante túnel; metadatos y búsquedas reales comprobados. Casos completos de aceptación pendientes.
 
 El CSV previsto es `anime_seasonal_20261116.csv` de LeoRigasaki/Anime-dataset.
 Se consulta la copia identificada en la fase 3, sin necesitar Jikan ni el repositorio vecino.
@@ -41,6 +71,8 @@ Ver [informe de calidad](docs/03-dataset.md) y [diccionario](docs/03-diccionario
 ## Requisitos
 
 Python 3.11 o superior, Node.js 20.9 o superior y npm.
+La validación completa de esta entrega utiliza Python 3.12 y Node 24;
+las pruebas de imágenes usan soporte experimental para TypeScript de Node moderno.
 Se usa venv/pip para Python y npm para la web. Trabajar desde esta carpeta.
 
 ## Instalar en PowerShell
@@ -69,7 +101,7 @@ No ejecutar los recolectores de referencia.
 Primera terminal, desde la raíz de `anime-data-agent`:
 
 ```powershell
-.\.venv\Scripts\python.exe -m uvicorn anime_agent.main:app --host 127.0.0.1 --port 8000
+.\.venv\Scripts\python.exe scripts/start_api.py --mode rules
 ```
 
 Segunda terminal, desde la misma carpeta:
@@ -95,7 +127,40 @@ $env:API_URL = 'http://127.0.0.1:8000'
 `ANIME_DATASET_PATH` y `ANIME_CONVERSATION_DB` admiten rutas absolutas o relativas
 a la raíz del proyecto. El primero apunta a `data/processed/current.json`, no a
 un JSON de registros sin manifiesto. El segundo guarda el historial SQLite.
-No se necesitan claves de un modelo para estas fases.
+El modo `rules` no necesita clave. El modo `openai` intenta usar la clave configurada solo en el backend;
+si falta o el proveedor falla, continúa con reglas y advertencia.
+
+## Modelo OpenAI (fase 7)
+
+Crear la clave en https://platform.openai.com/api-keys y revisar saldo/créditos
+del proyecto de API. No pegar la clave en el chat ni en archivos versionados.
+Detener el Uvicorn anterior y ejecutar desde esta carpeta:
+
+```powershell
+.\.venv\Scripts\python.exe scripts/start_api.py
+```
+
+La entrada de clave es oculta; el programa no la guarda en disco. El modelo
+predeterminado configurable es `gpt-5-mini`. Arrancar el servidor no hace llamadas
+al modelo; enviar mensajes sí puede generar consumo de API.
+
+En otra terminal, para comprobar tres turnos reales con uso de API:
+
+```powershell
+.\.venv\Scripts\python.exe scripts/smoke_model.py --allow-api
+```
+
+La prueba verifica filtros, contexto y comparación. El usuario la ejecutó, pero
+OpenAI devolvió `credit_balance_exhausted`; no hay generación real aprobada. Luego recargar `/analisis` para ver el modo
+y el consumo reportado por turno. Para volver a reglas sin modelo:
+
+```powershell
+.\.venv\Scripts\python.exe scripts/start_api.py --mode rules
+```
+
+Si OpenAI no está disponible, se continúa con reglas locales y advertencia visible.
+Enter sin clave también permite continuar. Reiniciar la API para reintentar el modelo. Ver límites,
+datos enviados y presentación fundamentada en [fase 7](docs/07-modelo-ia.md).
 
 ## Probar consultas y conversación (fases 4 y 5)
 
@@ -140,6 +205,7 @@ capacidades pendientes. Los resultados ejecutados se registran en `docs/02-proye
 - [Consultas, fase 4](docs/04-consultas.md).
 - [Conversación e historial, fase 5](docs/05-conversacion.md).
 - [Interfaz, fase 6](docs/06-interfaz.md).
+- [Modelo de IA, fase 7](docs/07-modelo-ia.md).
 
 ## Imágenes y presentación
 
@@ -160,3 +226,65 @@ cobertura visual y limitaciones en el documento de fase 6.
 
 El código base de esta fase se escribió para anime; no se copiaron la galería,
 imágenes, componentes deportivos ni credenciales del proyecto de referencia.
+
+
+## Validación reproducible (fase 8)
+
+Con las dependencias y la carga de datos ya preparadas:
+
+```powershell
+.\.venv\Scripts\python.exe scripts/validate_project.py
+```
+
+No llama a OpenAI. Ejecuta pruebas, seis casos de aceptación, demostración directa,
+TypeScript y compilación. Guarda logs y resumen en `docs/evidence/phase8/`;
+`latest.json` señala el último informe. Un resultado local correcto no acredita
+una llamada real al modelo ni una prueba de navegador.
+
+Para incluir HTTP, iniciar primero la API con reglas en otra terminal:
+
+```powershell
+.\.venv\Scripts\python.exe scripts/start_api.py --mode rules
+```
+
+Y ejecutar `scripts/validate_project.py --http` con el Python del entorno virtual.
+La prueba HTTP rechaza el modo OpenAI antes de enviar mensajes.
+Ver [validación y limitaciones](docs/08-validacion.md) y
+[recorrido de demostración](docs/08-demo.md).
+
+Al clonar en otra máquina, `data/` no viene incluido: instalar dependencias,
+obtener el CSV de la revisión indicada en `docs/03-dataset.md` y ejecutar
+`prepare_dataset.py`. El chequeo de aceptación exige el hash acordado;
+una nueva captura requiere revisar sus resultados esperados.
+
+
+## MCP para ChatGPT (fase 9)
+
+El servidor en `apps/mcp` expone búsqueda, ranking, detalle, comparación,
+agregados y metadatos de la captura mediante herramientas de solo lectura.
+Delega todos los cálculos a Python; no llama al modelo de la fase 7.
+
+Con la API ya iniciada, desde la raíz:
+
+```powershell
+npm.cmd --prefix apps/mcp ci
+npm.cmd --prefix apps/mcp run build
+npm.cmd --prefix apps/mcp start
+```
+
+En otra terminal:
+
+```powershell
+npm.cmd --prefix apps/mcp run smoke
+```
+
+El endpoint privado es `http://127.0.0.1:3001/mcp`; no se pega localhost en
+ChatGPT esperando acceso remoto directo. Para conectar esa cuenta, seguir la
+[guía de fase 9](docs/09-mcp.md) con Secure MCP Tunnel. La conexión y consultas de metadatos y búsqueda desde ChatGPT se comprobaron;
+falta completar los demás casos de aceptación. Ver también la
+[guía paso a paso](docs/10-ejecucion-paso-a-paso.md).
+
+`npm.cmd --prefix apps/mcp test` ejecuta diez pruebas de protocolo, contratos y
+errores. `scripts/validate_project.py --http --mcp` añade esas pruebas al chequeo
+general; requiere API local en reglas y no consume inferencia. El cliente smoke
+también admite `--stdio`, o `--web` si la web está iniciada para contrastar su proxy.

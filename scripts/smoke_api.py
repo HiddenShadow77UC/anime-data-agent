@@ -28,6 +28,8 @@ def main():
     health = call('/api/health')
     if health['dataset_status'] != 'validated':
         raise RuntimeError('Dataset not validated; check ANIME_DATASET_PATH and preparation.')
+    if health.get('agent_mode') != 'rules':
+        raise RuntimeError('Start scripts/start_api.py --mode rules before this check; no model calls were made.')
     meta = call('/api/dataset')
     ranking = call('/api/query', {'filters': {'formats': ['tv'], 'genres': ['Fantasy'], 'max_episodes': 26}, 'limit': 10})
     if not ranking['rows']:

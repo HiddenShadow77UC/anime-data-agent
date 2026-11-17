@@ -1,7 +1,7 @@
 "use client";
 import { FormEvent, useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { Anime, api, ApiError, Conversation, Dataset, loadMedia, MediaIndex, number, QueryResult, score, Turn, format } from "../lib/api";
+import { Anime, api, ApiError, Conversation, Dataset, Health, loadMedia, MediaIndex, number, QueryResult, score, Turn, format } from "../lib/api";
 import { AnimeDetail, Art, Header } from "./shared";
 import { useArtwork } from "../lib/artwork";
 
@@ -24,6 +24,7 @@ type Pending = { message: string; base_turn_id: string | null; selected_ids: num
 export default function Analysis() {
   const [conversation, setConversation] = useState<Conversation | null>(null);
   const [dataset, setDataset] = useState<Dataset | null>(null);
+  const [health, setHealth] = useState<Health | null>(null);
   const [media, setMedia] = useState<MediaIndex | null>(null);
   const [busy, setBusy] = useState(true);
   const [error, setError] = useState("");
@@ -47,6 +48,7 @@ export default function Analysis() {
       .catch(e => { if (active) setError(e instanceof Error ? e.message : "No se pudo abrir el historial."); })
       .finally(() => { if (active) setBusy(false); });
     void api<Dataset>("/dataset").then(d => { if (active) setDataset(d); }).catch(() => {});
+    void api<Health>("/health").then(h => { if (active) setHealth(h); }).catch(() => {});
     void loadMedia().then(m => { if (active) setMedia(m); });
     const id = new URLSearchParams(location.search).get("anime");
     if (id && /^\d+$/.test(id)) void api<QueryResult>(`/anime/${id}`).then(r => { if (active) setIncoming(r.rows[0]); }).catch(() => {});
@@ -63,10 +65,11 @@ export default function Analysis() {
     };
     pending.current = body; setBusy(true); setError("");
     try {
-      await api<Turn>(`/conversations/${conversation.id}/turns`, body);
+      await api<Turn>(`/conversations/${conversation.id}/turns`, body, 90000);
       const refreshed = await api<Conversation>(`/conversations/${conversation.id}`);
       setConversation(refreshed); setSelected(refreshed.turns.find(t => t.id === refreshed.active_turn_id)?.response.state.selected_ids || []);
       setDraft(""); setDetail(null); pending.current = null;
+      void api<Health>("/health").then(setHealth).catch(() => {});
     } catch (e) {
       setError(e instanceof Error ? e.message : "No se pudo completar el mensaje.");
       if (e instanceof ApiError && e.status === 409) {
@@ -100,14 +103,14 @@ export default function Analysis() {
   const suggestions = result ? ["Solo TV", "Máximo 26 episodios", "Ordénalos por popularidad"] : ["Busca Death Note", "Muéstrame los 10 animes de fantasía mejor puntuados", "¿Cuántas series se estrenaron por año desde 2020?"];
 
   return <><Header analysis /><main className="analysis-shell">
-    <div className="workspace-heading"><div><span className="eyebrow">DE LA PREGUNTA A LA EVIDENCIA</span><h1>Explorá. Compará. <em>Descubrí.</em></h1></div><div className="workspace-badge"><i />Conversación con reglas acotadas<span>Modelo de IA pendiente · fase 7</span></div></div>
+    <div className="workspace-heading"><div><span className="eyebrow">DE LA PREGUNTA A LA EVIDENCIA</span><h1>Explorá. Compará. <em>Descubrí.</em></h1></div><div className="workspace-badge"><i />{health?.agent_mode === "openai" ? `OpenAI · ${health.model_name}` : health ? "Conversación con reglas acotadas" : "Comprobando modo de conversación"}<span>{health?.agent_mode === "openai" ? health.model_status === "verified" ? "Llamada real verificada · herramientas locales" : health.model_status === "missing_api_key" ? "Falta configurar la clave local" : "Configurado · pendiente de primera llamada real" : health ? (health.model_warning ? `IA no disponible: ${health.model_warning}. Continuamos con reglas locales.` : "Modo explícito sin modelo de IA") : "El resultado anterior se conserva"}</span></div></div>
     <div className="workspace-grid">
       <section className="chat-panel" aria-labelledby="chat-heading"><div className="panel-heading"><div><span className="eyebrow">TU CONVERSACIÓN</span><h2 id="chat-heading">Preguntale al catálogo</h2></div><button className="icon-button" title="Nueva conversación; conserva la anterior" aria-label="Nueva conversación" disabled={busy} onClick={() => void newConversation()}>＋</button></div>
         {incoming && <div className="incoming-anime"><Art src={images?.[incoming.anime_id]?.cover} alt={`Portada de ${incoming.title}`} /><div><span className="eyebrow">DESDE EXPLORAR</span><strong>{incoming.title}</strong><button disabled={busy} onClick={() => void send(`Detalle de ${incoming.anime_id}`)}>Ver en la conversación ↗</button></div><button className="dismiss" aria-label="Descartar anime elegido" onClick={() => setIncoming(null)}>×</button></div>}
         <div className="chat-thread" ref={thread} aria-label="Historial de conversación">
           {!conversation?.turns.length && <div className="chat-welcome"><div className="welcome-icon" aria-hidden="true">✳</div><h3>Una buena pregunta<br />abre otra historia.</h3><p>Buscá un título, compará dos entregas o explorá los estrenos por año.</p></div>}
           {conversation?.turns.map((saved, i) => <article className={`chat-turn ${saved.id === conversation.active_turn_id ? "active-turn" : ""}`} key={saved.id}>
-            <div className="user-message"><span>VOS · {String(i + 1).padStart(2, "0")}</span><p>{saved.message}</p></div><div className="agent-message"><span className="agent-label">✳ DATA AGENT {saved.response.status === "clarification" && <small>ACLARACIÓN</small>}</span><p>{saved.response.explanation}</p><button className="text-button" disabled={busy || saved.id === conversation.active_turn_id} onClick={() => void activate(saved)}>{saved.id === conversation.active_turn_id ? "Turno activo" : "Recuperar este turno ↶"}</button></div>
+            <div className="user-message"><span>VOS · {String(i + 1).padStart(2, "0")}</span><p>{saved.message}</p></div><div className="agent-message"><span className="agent-label">✳ DATA AGENT <small>{saved.response.interpreter === "openai_tools" ? "OPENAI + HERRAMIENTAS" : "REGLAS"}</small>{saved.response.status === "clarification" && <small>ACLARACIÓN</small>}</span><p>{saved.response.explanation}</p>{saved.response.model_run && <p className="muted">{saved.response.model_run.requests} llamadas · {number(saved.response.model_run.input_tokens)} tokens de entrada · {number(saved.response.model_run.output_tokens)} de salida</p>}<button className="text-button" disabled={busy || saved.id === conversation.active_turn_id} onClick={() => void activate(saved)}>{saved.id === conversation.active_turn_id ? "Turno activo" : "Recuperar este turno ↶"}</button></div>
           </article>)}
           {busy && <p className="thinking" role="status">Preparando resultados…</p>}
         </div>

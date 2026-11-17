@@ -1,7 +1,9 @@
 # Fase 6 — Interfaz
 
-Estado: primera implementación completada; TypeScript y compilación correctos.
-Pendiente revisión visual en navegador y aprobación del usuario.
+Estado: versión inicial aprobada explícitamente por el usuario para la entrega
+y el prototipo funcional. Mejoras visuales y beta móvil quedan pendientes para
+iteraciones posteriores. La aprobación no se presenta como validación automatizada
+de los aspectos que esta sesión no pudo comprobar en navegador.
 Las fases 4 y 5 fueron aprobadas antes de iniciar esta fase.
 
 ## Decisiones confirmadas

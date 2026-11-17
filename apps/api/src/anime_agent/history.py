@@ -1,6 +1,7 @@
 """Transactional SQLite history: immutable turns and optimistic active pointer."""
 import hashlib
 import sqlite3
+import threading
 from contextlib import contextmanager
 from datetime import datetime, timezone
 from pathlib import Path
@@ -20,6 +21,8 @@ class Conflict(ValueError):
 class History:
     def __init__(self, path: Path):
         self.path = path
+        self._locks = {}
+        self._locks_guard = threading.Lock()
         path.parent.mkdir(parents=True, exist_ok=True)
         with self.connect() as db:
             db.executescript('''
@@ -69,6 +72,12 @@ class History:
             return {**conversation, 'turns': [self.turn_value(row) for row in turns]}
 
     def append(self, cid, request, agent):
+        with self._locks_guard:
+            lock = self._locks.setdefault(cid, threading.Lock())
+        with lock:
+            return self._append(cid, request, agent)
+
+    def _append(self, cid, request, agent):
         fingerprint = hashlib.sha256(request.model_dump_json().encode()).hexdigest()
         with self.connect() as db:
             db.execute('BEGIN IMMEDIATE')
@@ -87,7 +96,19 @@ class History:
                 if row is None:
                     raise NotFound('Turno ajeno o inexistente.')
                 previous = AgentResponse.model_validate_json(row['response'])
-            response = agent.invoke({'previous': previous, 'request': request})['response']
+        # Do not hold a database write lock while waiting on a remote model.
+        response = agent.invoke({'previous': previous, 'request': request})['response']
+        with self.connect() as db:
+            db.execute('BEGIN IMMEDIATE')
+            conversation = self.conversation(db, cid)
+            if request.request_id:
+                prior = db.execute('SELECT * FROM turns WHERE conversation_id=? AND request_id=?', (cid, request.request_id)).fetchone()
+                if prior:
+                    if prior['request_hash'] != fingerprint:
+                        raise Conflict('request_id reutilizado con otro contenido.')
+                    return self.turn_value(prior)
+            if conversation['active_turn_id'] != request.base_turn_id:
+                raise Conflict('El contexto cambió durante la consulta. Recuperá el historial; no se guardó un turno sobre una base antigua.')
             tid = str(uuid4())
             db.execute('INSERT INTO turns VALUES (?,?,?,?,?,?,?,?)',
                        (tid, cid, request.base_turn_id, datetime.now(timezone.utc).isoformat(), request.message,

@@ -1,0 +1,74 @@
+{
+  "created_at": "2026-11-17T04:15:31.279348+00:00",
+  "python": "3.12.4",
+  "status": "checks_failed",
+  "checks": [
+    {
+      "check": "dependencies",
+      "exit_code": 0,
+      "seconds": 1.25,
+      "log": "dependencies.txt"
+    },
+    {
+      "check": "dataset_tests",
+      "exit_code": 0,
+      "seconds": 0.2,
+      "log": "dataset_tests.txt"
+    },
+    {
+      "check": "backend_tests",
+      "exit_code": 0,
+      "seconds": 5.99,
+      "log": "backend_tests.txt"
+    },
+    {
+      "check": "acceptance",
+      "exit_code": 0,
+      "seconds": 1.17,
+      "log": "acceptance.txt"
+    },
+    {
+      "check": "conversation_demo",
+      "exit_code": 0,
+      "seconds": 1.8,
+      "log": "conversation_demo.txt"
+    },
+    {
+      "check": "artwork_tests",
+      "exit_code": 0,
+      "seconds": 0.16,
+      "log": "artwork_tests.txt"
+    },
+    {
+      "check": "typecheck",
+      "exit_code": 0,
+      "seconds": 2.0,
+      "log": "typecheck.txt"
+    },
+    {
+      "check": "web_build",
+      "exit_code": 1,
+      "seconds": 4.34,
+      "log": "web_build.txt"
+    },
+    {
+      "check": "http",
+      "exit_code": 0,
+      "seconds": 0.48,
+      "log": "http.txt"
+    },
+    {
+      "check": "mcp_tests",
+      "exit_code": 0,
+      "seconds": 1.88,
+      "log": "mcp_tests.txt"
+    }
+  ],
+  "http": "executed",
+  "limitations": [
+    "OpenAI real: pending; user reported credit_balance_exhausted.",
+    "ASGI case omitted by default; inspect backend log.",
+    "No automated browser or fresh-machine installation verification.",
+    "Artwork tests mock the remote provider; no live availability guarantee."
+  ]
+}

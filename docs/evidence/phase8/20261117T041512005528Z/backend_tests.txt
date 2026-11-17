@@ -1,0 +1,33 @@
+test_failure_continues_and_does_not_retry_provider (test_fallback.FallbackTests.test_failure_continues_and_does_not_retry_provider) ... ok
+test_missing_key_uses_rules (test_fallback.FallbackTests.test_missing_key_uses_rules) ... ok
+test_other_errors_are_not_hidden (test_fallback.FallbackTests.test_other_errors_are_not_hidden) ... ok
+test_429_distinguishes_quota_from_temporary_rate_limit_without_leaking_body (test_openai_agent.OpenAIAcceptance.test_429_distinguishes_quota_from_temporary_rate_limit_without_leaking_body) ... ok
+test_ambiguous_title_cannot_be_chosen_without_resolution (test_openai_agent.OpenAIAcceptance.test_ambiguous_title_cannot_be_chosen_without_resolution) ... ok
+test_explicit_empty_selection_does_not_reuse_old_selected_ids (test_openai_agent.OpenAIAcceptance.test_explicit_empty_selection_does_not_reuse_old_selected_ids) ... ok
+test_fabricated_highlight_rejected_and_unsupported_metric_retains_result (test_openai_agent.OpenAIAcceptance.test_fabricated_highlight_rejected_and_unsupported_metric_retains_result) ... ok
+test_missing_selection_makes_no_provider_call (test_openai_agent.OpenAIAcceptance.test_missing_selection_makes_no_provider_call) ... ok
+test_model_wait_does_not_lock_database_and_stale_completion_is_rejected (test_openai_agent.OpenAIAcceptance.test_model_wait_does_not_lock_database_and_stale_completion_is_rejected) ... ok
+test_new_query_uses_real_repository_and_records_usage (test_openai_agent.OpenAIAcceptance.test_new_query_uses_real_repository_and_records_usage) ... ok
+test_provider_failure_rolls_back_without_fallback (test_openai_agent.OpenAIAcceptance.test_provider_failure_rolls_back_without_fallback) ... ok
+test_provider_http_errors_redact_body_and_settings_repr (test_openai_agent.OpenAIAcceptance.test_provider_http_errors_redact_body_and_settings_repr) ... ok
+test_provider_request_is_bounded_and_stateless (test_openai_agent.OpenAIAcceptance.test_provider_request_is_bounded_and_stateless) ... ok
+test_refinement_only_applies_listed_fields_and_can_clear_one (test_openai_agent.OpenAIAcceptance.test_refinement_only_applies_listed_fields_and_can_clear_one) ... ok
+test_selected_compare_preserves_filters_and_grounds_differences (test_openai_agent.OpenAIAcceptance.test_selected_compare_preserves_filters_and_grounds_differences) ... ok
+test_strict_schemas_keep_title_and_require_all_properties (test_openai_agent.OpenAIAcceptance.test_strict_schemas_keep_title_and_require_all_properties) ... ok
+test_unknown_tool_and_unfinished_responses_do_not_fake_success (test_openai_agent.OpenAIAcceptance.test_unknown_tool_and_unfinished_responses_do_not_fake_success) ... ok
+test_aggregate_uses_all_filtered_rows_not_limit (test_queries_conversation.Acceptance.test_aggregate_uses_all_filtered_rows_not_limit) ... ok
+test_clarification_retains_result_and_filters (test_queries_conversation.Acceptance.test_clarification_retains_result_and_filters) ... ok
+test_empty_details_and_comparison (test_queries_conversation.Acceptance.test_empty_details_and_comparison) ... ok
+test_full_conversation_branch_selection_and_restart (test_queries_conversation.Acceptance.test_full_conversation_branch_selection_and_restart) ... ok
+test_http_contracts_in_process (test_queries_conversation.Acceptance.test_http_contracts_in_process) ... skipped 'Opt-in ASGI test; this session cannot run the event loop reliably.'
+test_isolation_stale_turn_idempotency_and_rollback (test_queries_conversation.Acceptance.test_isolation_stale_turn_idempotency_and_rollback) ... ok
+test_missing_corrupt_or_escaping_snapshot_rejected (test_queries_conversation.Acceptance.test_missing_corrupt_or_escaping_snapshot_rejected) ... ok
+test_multiple_genre_operator_and_validation (test_queries_conversation.Acceptance.test_multiple_genre_operator_and_validation) ... ok
+test_real_filtered_rank_matches_original_csv (test_queries_conversation.Acceptance.test_real_filtered_rank_matches_original_csv) ... ok
+test_spanish_names_aggregate_explanation_and_ambiguous_reference (test_queries_conversation.Acceptance.test_spanish_names_aggregate_explanation_and_ambiguous_reference) ... ok
+test_votes_optional_and_popularity_direction (test_queries_conversation.Acceptance.test_votes_optional_and_popularity_direction) ... ok
+
+----------------------------------------------------------------------
+Ran 28 tests in 4.292s
+
+OK (skipped=1)

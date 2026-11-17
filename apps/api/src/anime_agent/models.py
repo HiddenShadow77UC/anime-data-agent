@@ -67,7 +67,7 @@ class Result(Model):
 class TurnRequest(Model):
     message: str = Field(min_length=1, max_length=2000)
     base_turn_id: str | None  # Required, explicit null for first turn.
-    selected_ids: list[int] = Field(default_factory=list, max_length=2)
+    selected_ids: list[int] | None = Field(default=None, max_length=2)
     request_id: str | None = Field(default=None, min_length=1, max_length=100)
 
 
@@ -84,7 +84,8 @@ class AgentResponse(Model):
     state: ConversationState
     result: Result | None = None
     visualization_action: Literal['create', 'update', 'retain']
-    interpreter: Literal['bounded_rules'] = 'bounded_rules'
+    interpreter: Literal['bounded_rules', 'openai_tools'] = 'bounded_rules'
+    model_run: dict | None = None
 
 
 class SavedTurn(Model):

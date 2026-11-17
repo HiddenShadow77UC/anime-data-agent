@@ -1,0 +1,479 @@
+{
+  "mode": "Direct service demonstration, no HTTP and no model",
+  "load_id": "anime-v1-2026-11-16-9f73ed290e1be7a4-b1b96aa4188deed8",
+  "manifest_sha256": "3bc3d49cc8fc379a73b3a7f0767313adf28eaa408a8f273ad0cef9c28ab39930",
+  "transcript": [
+    {
+      "message": "Muéstrame los 10 animes de fantasía mejor puntuados",
+      "status": "result",
+      "filters": {
+        "kind": "rank",
+        "filters": {
+          "title": null,
+          "formats": [],
+          "genres": [
+            "Fantasy"
+          ],
+          "genre_mode": "all",
+          "studio": null,
+          "year_from": null,
+          "year_to": null,
+          "statuses": [],
+          "min_score": null,
+          "min_votes": null,
+          "max_episodes": null
+        },
+        "order_by": "score",
+        "direction": "desc",
+        "limit": 10,
+        "ids": [],
+        "group_by": "year"
+      },
+      "explanation": "3768 registros elegibles; se muestran 10. 1075 sin dato para ordenar. Datos de la captura local; intérprete de reglas acotadas, sin modelo de IA.",
+      "total": 3768,
+      "rows": [
+        {
+          "anime_id": 52991,
+          "title": "Sousou no Frieren",
+          "score": 9.24,
+          "scored_by": 953556,
+          "episodes": 28
+        },
+        {
+          "anime_id": 5114,
+          "title": "Fullmetal Alchemist: Brotherhood",
+          "score": 9.11,
+          "scored_by": 2353794,
+          "episodes": 64
+        },
+        {
+          "anime_id": 61316,
+          "title": "Re:Zero kara Hajimeru Isekai Seikatsu 4th Season",
+          "score": 9.06,
+          "scored_by": 182721,
+          "episodes": 19
+        },
+        {
+          "anime_id": 57555,
+          "title": "Chainsaw Man Movie: Reze-hen",
+          "score": 9.05,
+          "scored_by": 379406,
+          "episodes": 1
+        },
+        {
+          "anime_id": 11061,
+          "title": "Hunter x Hunter (2011)",
+          "score": 9.03,
+          "scored_by": 2025403,
+          "episodes": 148
+        },
+        {
+          "anime_id": 60022,
+          "title": "One Piece Fan Letter",
+          "score": 8.99,
+          "scored_by": 121531,
+          "episodes": 1
+        },
+        {
+          "anime_id": 61967,
+          "title": "Black Clover 2nd Season",
+          "score": 8.89,
+          "scored_by": 22299,
+          "episodes": null
+        },
+        {
+          "anime_id": 59978,
+          "title": "Sousou no Frieren 2nd Season",
+          "score": 8.83,
+          "scored_by": 316064,
+          "episodes": 10
+        },
+        {
+          "anime_id": 199,
+          "title": "Sen to Chihiro no Kamikakushi",
+          "score": 8.77,
+          "scored_by": 1435813,
+          "episodes": 1
+        },
+        {
+          "anime_id": 21,
+          "title": "One Piece",
+          "score": 8.72,
+          "scored_by": 1568260,
+          "episodes": null
+        }
+      ],
+      "groups": []
+    },
+    {
+      "message": "Solo series de televisión de máximo 26 episodios",
+      "status": "result",
+      "filters": {
+        "kind": "rank",
+        "filters": {
+          "title": null,
+          "formats": [
+            "tv"
+          ],
+          "genres": [
+            "Fantasy"
+          ],
+          "genre_mode": "all",
+          "studio": null,
+          "year_from": null,
+          "year_to": null,
+          "statuses": [],
+          "min_score": null,
+          "min_votes": null,
+          "max_episodes": 26
+        },
+        "order_by": "score",
+        "direction": "desc",
+        "limit": 10,
+        "ids": [],
+        "group_by": "year"
+      },
+      "explanation": "1022 registros elegibles; se muestran 10. 106 sin dato para ordenar. Datos de la captura local; intérprete de reglas acotadas, sin modelo de IA.",
+      "total": 1022,
+      "rows": [
+        {
+          "anime_id": 61316,
+          "title": "Re:Zero kara Hajimeru Isekai Seikatsu 4th Season",
+          "score": 9.06,
+          "scored_by": 182721,
+          "episodes": 19
+        },
+        {
+          "anime_id": 59978,
+          "title": "Sousou no Frieren 2nd Season",
+          "score": 8.83,
+          "scored_by": 316064,
+          "episodes": 10
+        },
+        {
+          "anime_id": 59193,
+          "title": "Mushoku Tensei III: Isekai Ittara Honki Dasu",
+          "score": 8.66,
+          "scored_by": 167503,
+          "episodes": 14
+        },
+        {
+          "anime_id": 34599,
+          "title": "Made in Abyss",
+          "score": 8.62,
+          "scored_by": 854265,
+          "episodes": 13
+        },
+        {
+          "anime_id": 33,
+          "title": "Kenpuu Denki Berserk",
+          "score": 8.61,
+          "scored_by": 425463,
+          "episodes": 25
+        },
+        {
+          "anime_id": 41084,
+          "title": "Made in Abyss: Retsujitsu no Ougonkyou",
+          "score": 8.59,
+          "scored_by": 271676,
+          "episodes": 12
+        },
+        {
+          "anime_id": 45576,
+          "title": "Mushoku Tensei: Isekai Ittara Honki Dasu Part 2",
+          "score": 8.59,
+          "scored_by": 741528,
+          "episodes": 12
+        },
+        {
+          "anime_id": 52701,
+          "title": "Dungeon Meshi",
+          "score": 8.58,
+          "scored_by": 323741,
+          "episodes": 24
+        },
+        {
+          "anime_id": 11741,
+          "title": "Fate/Zero 2nd Season",
+          "score": 8.53,
+          "scored_by": 766500,
+          "episodes": 12
+        },
+        {
+          "anime_id": 58567,
+          "title": "Ore dake Level Up na Ken Season 2: Arise from the Shadow",
+          "score": 8.49,
+          "scored_by": 544209,
+          "episodes": 13
+        }
+      ],
+      "groups": []
+    },
+    {
+      "message": "Compara estos dos",
+      "status": "result",
+      "filters": {
+        "kind": "compare",
+        "filters": {
+          "title": null,
+          "formats": [
+            "tv"
+          ],
+          "genres": [
+            "Fantasy"
+          ],
+          "genre_mode": "all",
+          "studio": null,
+          "year_from": null,
+          "year_to": null,
+          "statuses": [],
+          "min_score": null,
+          "min_votes": null,
+          "max_episodes": 26
+        },
+        "order_by": "score",
+        "direction": "desc",
+        "limit": 10,
+        "ids": [
+          61316,
+          59978
+        ],
+        "group_by": "year"
+      },
+      "explanation": "2 registros elegibles; se muestran 2. Datos de la captura local; intérprete de reglas acotadas, sin modelo de IA.",
+      "total": 2,
+      "rows": [
+        {
+          "anime_id": 61316,
+          "title": "Re:Zero kara Hajimeru Isekai Seikatsu 4th Season",
+          "score": 9.06,
+          "scored_by": 182721,
+          "episodes": 19
+        },
+        {
+          "anime_id": 59978,
+          "title": "Sousou no Frieren 2nd Season",
+          "score": 8.83,
+          "scored_by": 316064,
+          "episodes": 10
+        }
+      ],
+      "groups": []
+    },
+    {
+      "message": "Solo TV y con doblaje costarricense",
+      "status": "clarification",
+      "filters": {
+        "kind": "compare",
+        "filters": {
+          "title": null,
+          "formats": [
+            "tv"
+          ],
+          "genres": [
+            "Fantasy"
+          ],
+          "genre_mode": "all",
+          "studio": null,
+          "year_from": null,
+          "year_to": null,
+          "statuses": [],
+          "min_score": null,
+          "min_votes": null,
+          "max_episodes": 26
+        },
+        "order_by": "score",
+        "direction": "desc",
+        "limit": 10,
+        "ids": [
+          61316,
+          59978
+        ],
+        "group_by": "year"
+      },
+      "explanation": "Esa condición todavía no está implementada en el intérprete acotado. El resultado anterior se conserva; no se aplicó parcialmente el mensaje.",
+      "total": 2,
+      "rows": [
+        {
+          "anime_id": 61316,
+          "title": "Re:Zero kara Hajimeru Isekai Seikatsu 4th Season",
+          "score": 9.06,
+          "scored_by": 182721,
+          "episodes": 19
+        },
+        {
+          "anime_id": 59978,
+          "title": "Sousou no Frieren 2nd Season",
+          "score": 8.83,
+          "scored_by": 316064,
+          "episodes": 10
+        }
+      ],
+      "groups": []
+    },
+    {
+      "message": "Solo TV",
+      "status": "result",
+      "filters": {
+        "kind": "rank",
+        "filters": {
+          "title": null,
+          "formats": [
+            "tv"
+          ],
+          "genres": [
+            "Fantasy"
+          ],
+          "genre_mode": "all",
+          "studio": null,
+          "year_from": null,
+          "year_to": null,
+          "statuses": [],
+          "min_score": null,
+          "min_votes": null,
+          "max_episodes": null
+        },
+        "order_by": "score",
+        "direction": "desc",
+        "limit": 10,
+        "ids": [],
+        "group_by": "year"
+      },
+      "explanation": "1280 registros elegibles; se muestran 10. 184 sin dato para ordenar. Datos de la captura local; intérprete de reglas acotadas, sin modelo de IA.",
+      "total": 1280,
+      "rows": [
+        {
+          "anime_id": 52991,
+          "title": "Sousou no Frieren",
+          "score": 9.24,
+          "scored_by": 953556,
+          "episodes": 28
+        },
+        {
+          "anime_id": 5114,
+          "title": "Fullmetal Alchemist: Brotherhood",
+          "score": 9.11,
+          "scored_by": 2353794,
+          "episodes": 64
+        },
+        {
+          "anime_id": 61316,
+          "title": "Re:Zero kara Hajimeru Isekai Seikatsu 4th Season",
+          "score": 9.06,
+          "scored_by": 182721,
+          "episodes": 19
+        },
+        {
+          "anime_id": 11061,
+          "title": "Hunter x Hunter (2011)",
+          "score": 9.03,
+          "scored_by": 2025403,
+          "episodes": 148
+        },
+        {
+          "anime_id": 61967,
+          "title": "Black Clover 2nd Season",
+          "score": 8.89,
+          "scored_by": 22299,
+          "episodes": null
+        },
+        {
+          "anime_id": 59978,
+          "title": "Sousou no Frieren 2nd Season",
+          "score": 8.83,
+          "scored_by": 316064,
+          "episodes": 10
+        },
+        {
+          "anime_id": 21,
+          "title": "One Piece",
+          "score": 8.72,
+          "scored_by": 1568260,
+          "episodes": null
+        },
+        {
+          "anime_id": 59193,
+          "title": "Mushoku Tensei III: Isekai Ittara Honki Dasu",
+          "score": 8.66,
+          "scored_by": 167503,
+          "episodes": 14
+        },
+        {
+          "anime_id": 34599,
+          "title": "Made in Abyss",
+          "score": 8.62,
+          "scored_by": 854265,
+          "episodes": 13
+        },
+        {
+          "anime_id": 33,
+          "title": "Kenpuu Denki Berserk",
+          "score": 8.61,
+          "scored_by": 425463,
+          "episodes": 25
+        }
+      ],
+      "groups": []
+    },
+    {
+      "message": "¿Cuántas series se estrenaron por año desde 2020?",
+      "status": "result",
+      "filters": {
+        "kind": "aggregate",
+        "filters": {
+          "title": null,
+          "formats": [
+            "tv"
+          ],
+          "genres": [],
+          "genre_mode": null,
+          "studio": null,
+          "year_from": 2020,
+          "year_to": null,
+          "statuses": [],
+          "min_score": null,
+          "min_votes": null,
+          "max_episodes": null
+        },
+        "order_by": "score",
+        "direction": "desc",
+        "limit": 10,
+        "ids": [],
+        "group_by": "year"
+      },
+      "explanation": "1731 registros agrupados en 7 grupos. Datos de la captura local; intérprete de reglas acotadas, sin modelo de IA.",
+      "total": 1731,
+      "rows": [],
+      "groups": [
+        {
+          "key": "2020",
+          "count": 219
+        },
+        {
+          "key": "2021",
+          "count": 239
+        },
+        {
+          "key": "2022",
+          "count": 215
+        },
+        {
+          "key": "2023",
+          "count": 259
+        },
+        {
+          "key": "2024",
+          "count": 259
+        },
+        {
+          "key": "2025",
+          "count": 275
+        },
+        {
+          "key": "2026",
+          "count": 265
+        }
+      ]
+    }
+  ]
+}

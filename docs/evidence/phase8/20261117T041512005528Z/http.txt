@@ -1,0 +1,3 @@
+OK: dataset, ranking, validation, conversation, comparison, idempotency and history over real HTTP.
+Records: 22634 | conversation: 59b56c18-e2be-4c4a-89bf-1837c04f224e
+First 3 demo titles: Re:Zero kara Hajimeru Isekai Seikatsu 4th Season, Sousou no Frieren 2nd Season, Mushoku Tensei III: Isekai Ittara Honki Dasu

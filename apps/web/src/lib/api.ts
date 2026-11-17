@@ -23,7 +23,9 @@ export type AgentResponse = {
   result: QueryResult | null;
   state: { query: QuerySpec | null; selected_ids: number[]; load_id: string | null };
   visualization_action: string; interpreter: string;
+  model_run?: { model: string; requests: number; input_tokens: number; output_tokens: number; duration_ms: number } | null;
 };
+export type Health = { model_warning?: string | null; agent_mode: "rules" | "openai"; model_status: string; model_name: string | null; model_last_verified_at: string | null };
 export type Turn = { id: string; parent_turn_id: string | null; created_at: string; message: string; response: AgentResponse };
 export type Conversation = { id: string; active_turn_id: string | null; created_at: string; turns: Turn[] };
 export type Media = { cover: string | null; banner: string | null; source_url: string; collected_at: string; anilist_id: string };
@@ -34,11 +36,11 @@ export class ApiError extends Error {
   constructor(message: string, public status: number) { super(message); }
 }
 
-export async function api<T>(path: string, body?: unknown): Promise<T> {
+export async function api<T>(path: string, body?: unknown, timeout = 30000): Promise<T> {
   const response = await fetch(`/api${path}`, {
     method: body === undefined ? "GET" : "POST", cache: "no-store",
     headers: { "Content-Type": "application/json" },
-    body: body === undefined ? undefined : JSON.stringify(body), signal: AbortSignal.timeout(30000),
+    body: body === undefined ? undefined : JSON.stringify(body), signal: AbortSignal.timeout(timeout),
   });
   let data: unknown;
   try { data = await response.json(); } catch { throw new ApiError("La API no respondió. Comprobá que esté ejecutándose.", response.status); }
