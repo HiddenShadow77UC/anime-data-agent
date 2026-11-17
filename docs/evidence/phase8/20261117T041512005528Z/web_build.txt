@@ -1,0 +1,26 @@
+
+> @anime-data-agent/web@0.1.0 build
+> next build
+
+▲ Next.js 16.4.6 (Turbopack)
+✓ Running next.config.ts took 49ms
+
+  Creating an optimized production build ...
+✓ Compiled successfully in 289ms
+  Running TypeScript ...
+  Finished TypeScript in 1013ms ...
+  Collecting page data using 6 workers ...
+  Generating static pages using 6 workers (0/5) ...
+  Generating static pages using 6 workers (1/5) 
+  Generating static pages using 6 workers (2/5) 
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm. See `npm help npmrc` for supported config options.
+Error occurred prerendering page "/_not-found". Read more: https://nextjs.org/docs/messages/prerender-error
+Error: EPERM: operation not permitted, mkdir 'C:\Users\USUARIO\Documents\GitHub\Innovacion\anime-data-agent\apps\web\.next\server\app\_not-found.segments\_not-found'
+    at ignore-listed frames {
+  errno: -4048,
+  code: 'EPERM',
+  syscall: 'mkdir',
+  path: 'C:\\Users\\USUARIO\\Documents\\GitHub\\Innovacion\\anime-data-agent\\apps\\web\\.next\\server\\app\\_not-found.segments\\_not-found'
+}
+Export encountered an error on /_not-found/page: /_not-found, exiting the build.
+⨯ Next.js build worker exited with code: 1 and signal: null

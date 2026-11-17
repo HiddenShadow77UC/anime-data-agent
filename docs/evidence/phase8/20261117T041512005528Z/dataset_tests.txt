@@ -1,0 +1,10 @@
+test_future_dates_can_be_uncertain (test_prepare_dataset.PreparationTests.test_future_dates_can_be_uncertain) ... ok
+test_invalid_input_does_not_replace_current_pointer (test_prepare_dataset.PreparationTests.test_invalid_input_does_not_replace_current_pointer) ... ok
+test_invalid_score_and_changed_statistics_rejected (test_prepare_dataset.PreparationTests.test_invalid_score_and_changed_statistics_rejected) ... ok
+test_partial_dates_keep_precision (test_prepare_dataset.PreparationTests.test_partial_dates_keep_precision) ... ok
+test_zero_policies_preserve_votes_and_originals (test_prepare_dataset.PreparationTests.test_zero_policies_preserve_votes_and_originals) ... ok
+
+----------------------------------------------------------------------
+Ran 5 tests in 0.024s
+
+OK

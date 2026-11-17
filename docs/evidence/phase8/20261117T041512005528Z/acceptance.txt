@@ -1,0 +1,7 @@
+PASS: Ranking completo sin mínimo de votos
+PASS: Fantasía TV máximo 26 episodios
+PASS: Comparación por IDs
+PASS: Detalle Death Note
+PASS: TV por año desde 2020
+PASS: Búsqueda sin coincidencias
+Load: anime-v1-2026-11-16-9f73ed290e1be7a4-b1b96aa4188deed8
